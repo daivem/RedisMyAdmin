@@ -1,0 +1,206 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+/**
+ * 导出数据
+ * @author DV
+ *
+ */
+class Export extends MY_Controller {
+	
+
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
+	public function index()
+	{
+		if ($this -> is_post()) {
+			$this -> _do_index();
+			return ;
+		}	
+		
+		$type = get_arg('type', 'redis', 'trim');
+		
+		$key = get_arg('key', '', 'trim');
+
+		$page_data = $this -> get_default_page_data();
+		$page_data['type'] = $type;
+		$page_data['key'] = $key;
+
+		$page_data['title'] = '导出数据';
+		$this -> load -> view('export', $page_data);
+		
+	}
+	
+	private function _do_index()
+	{
+		$type = get_arg('type', 'redis', 'trim');
+		
+		$key = get_arg('key', NULL);
+		
+		if ( $type == 'redis' ) {
+			$ext = 'redis';
+			$ct  = 'text/plain';
+		} else {
+			$ext = 'js';
+			$ct  = 'application/json';
+		}
+		
+		header('Content-type: '.$ct.'; charset=utf-8');
+		header('Content-Disposition: inline; filename="export.'.$ext.'"');
+			
+		$redis = $this -> redis_model -> get_redis_instance();			
+		if ( $type == 'redis' ) {
+			//导出Redis命令
+			if ( $key !== NULL ) {
+				//导出单个KEY
+				echo $this -> _export_redis($key);
+			} else {
+				//导出所有KEY
+				$keys = $redis -> keys('*');
+				$values = array();
+				foreach($keys as $key) {
+					$values[] = $this -> _export_redis($key);
+				}
+				echo implode(PHP_EOL, $values);	
+			}
+		
+		} else {
+			//json格式
+			if ( $key !== NULL ) {
+				//导出单个KEY
+				echo json_encode( $this -> _export_json($key) );
+			} else {
+				//导出所有KEY
+				$keys = $redis -> keys('*');
+				$values = array();
+					
+				foreach($keys as $key) {
+					$values[$key] = $this -> _export_json($key);
+				}
+				echo json_encode($values);
+			}
+		}
+		
+		die();
+	}
+	
+	
+
+	/**
+	 *
+	 * 导出数据为 Redis命令行格式
+	 * @param $key
+	 */
+	private function _export_redis($key)
+	{
+		$redis = $this -> redis_model -> get_redis_instance();
+		$redis_types = $this -> redis_model -> get_redis_types();
+	
+		$type = $redis -> type($key);
+		
+		if (!isset($redis_types[$type])) {
+			return;
+		}
+	
+		$type = $redis_types[$type];
+	
+		// String
+		if ($type == 'string') {
+			return 'SET "' . addslashes($key) . '" "' . addslashes($redis -> get($key)) . '"';
+		}
+	
+		// Hash
+		else if ($type == 'hash') {
+			$values = $redis -> hGetAll($key);
+	
+			foreach ($values as $k => $v) {
+				return 'HSET "' . addslashes($key) . '" "' . addslashes($k) . '" "' . addslashes($v) . '"';
+			}
+		}
+	
+		// List
+		else if ($type == 'list') {
+			$size = $redis -> lSize($key);
+	
+			for ($i = 0; $i < $size; ++$i) {
+				return 'RPUSH "' . addslashes($key) . '" "' . addslashes($redis -> lGet($key .  $i)) . '"';
+			}
+		}
+	
+		// Set
+		else if ($type == 'set') {
+			$values = $redis -> sMembers($key);
+				
+			foreach ($values as $v) {
+				return 'SADD "' . addslashes($key) . '" "' . addslashes($v) . '"';
+			}
+		}
+	
+		// ZSet
+		else if ($type == 'zset') {
+			$values = $redis -> zRange($key, 0, -1);
+	
+			foreach ($values as $v) {
+				$s = $redis -> zScore($key, $v);					
+				return 'ZADD "' . addslashes($key) . '" ' . $s . ' "' . addslashes($v) . '"';
+			}
+		}
+	}
+	
+	
+	
+	/**
+	 *
+	 * 导出数据为json格式
+	 * @param $key
+	 */
+	private function _export_json($key)
+	{
+		$redis = $this -> redis_model -> get_redis_instance();
+		$redis_types = $this -> redis_model -> get_redis_types();
+	
+		$type = $redis -> type($key);
+	
+		if ( ! isset($redis_types[$type]) ) {
+			return 'undefined';
+		}
+	
+		$type = $redis_types[$type];
+	
+	
+		// String
+		if ($type == 'string') {
+			$value = $redis -> get($key);
+		}
+	
+		// Hash
+		else if ($type == 'hash') {
+			$value = $redis -> hGetAll($key);
+		}
+	
+		// List
+		else if ($type == 'list') {
+			$size  = $redis -> lSize($key);
+			$value = array();
+	
+			for ($i = 0; $i < $size; ++$i) {
+				$value[] = $redis -> lGet($key, $i);
+			}
+		}
+	
+		// Set
+		else if ($type == 'set') {
+			$value = $redis -> sMembers($key);
+		}
+	
+		// ZSet
+		else if ($type == 'zset') {
+			$value = $redis -> zRange($key, 0, -1);
+		}
+	
+	
+		return $value;
+	}
+}
