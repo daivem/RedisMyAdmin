@@ -27,7 +27,7 @@ $(function() {
 	  var db = $('#redis_db').val();
 	  
 	  var request = GetRequest();
-	  request['s'] = server;
+	  request['server_id'] = server;
 	  request['db'] = db;
 	  
 	  var url = 'http://' + location.hostname + location.pathname + '?';

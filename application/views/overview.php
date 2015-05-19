@@ -70,7 +70,21 @@
 		</tr>
 		<tr>
 			<td><div>上次保存：</div></td>
-			<td><div><?= format_ago(time() - $info[$i]['last_save_time'], true)?> <a href="<?= manager_site_url('save', 'index'); ?>"><img src="<?= base_url('static/images/save.png'); ?>" width="16" height="16" title="目前保存" alt="[S]" class="imgbut"></a></div></td>
+			<?php
+				$last_save_time = NULL;
+				if ( isset($info[$i]['rdb_last_save_time']) ) {
+					$last_save_time = $info[$i]['rdb_last_save_time'];
+				} elseif ( isset($info[$i]['last_save_time']) ) {
+					$last_save_time = $info[$i]['last_save_time'];
+				}
+			?>
+			<td>
+				<div><?= ( $last_save_time === NULL ? '未知' : format_ago(time() - $last_save_time, true) ) ?> 
+					<a href="<?= manager_site_url('save', 'index'); ?>">
+						<img src="<?= base_url('static/images/save.png'); ?>" width="16" height="16" title="目前保存" alt="[S]" class="imgbut">
+					</a>
+				</div>
+			</td>
 		</tr>
 		<?php 
 			}

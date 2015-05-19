@@ -23,7 +23,7 @@
 	<p>
 		<select id="server">
 			<?php foreach ($server_list as $i => $srv) { ?>
-			<option value="<?= $i?>" <?= ($server_id == $i) ? 'selected="selected"' : ''?>>
+			<option value="<?= $i?>" <?= (SERVER_ID == $i) ? 'selected="selected"' : ''?>>
 			<?= isset($srv['name']) ? format_html($srv['name']) : $srv['host'].':'.$srv['port']?>
 			</option>
 			<?php } ?>
@@ -32,7 +32,7 @@
 		DB:
 		<select id="redis_db">
 			<?php for($i = 0; $i <= 20; $i++){?>
-			<option value="<?= $i?>" <?= ($db == $i) ? 'selected="selected"' : ''?>>
+			<option value="<?= $i?>" <?= (CURRENT_DB == $i) ? 'selected="selected"' : ''?>>
 			<?= $i; ?>
 			</option>
 			<?php }?>
