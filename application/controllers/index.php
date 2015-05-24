@@ -20,9 +20,11 @@ class Index extends MY_Controller {
 	{
 		if ( '' === KEY_PREFIX ) {
 			if (CLUSTER_MODE) {
-				$redis_keys = $this -> redis_model -> get_all_keys('*');
-				$db_size = count($redis_keys);
-				unset($redis_keys);
+				$redis = $this -> redis_model -> get_redis_instance();
+				$db_size = 0;
+				foreach($redis -> _masters() as $s) {
+					$db_size += $redis -> dbsize($s);
+				}
 			} else {
 				$db_size = $this -> redis_model -> get_keys_count();
 			}
