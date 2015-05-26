@@ -24,11 +24,39 @@ class Redis_Model extends CI_Model {
 	
 		if ( ( empty($redis_config) )
 			|| ( ! is_array($redis_config) )
-			|| ( ! isset($redis_config['host']) )
 		){
 			show_error('Redis Config Error');
 		}
 		
+		if ( isset($redis_config['host']) ) {
+			return $this -> _init_redis($redis_config);
+		} elseif ( ( isset($redis_config['cluster_list']) )
+				&& ( is_array($redis_config['cluster_list']) )
+		){
+			$this -> _init_cluster($redis_config);
+		} else{
+			show_error('Redis Config Error');
+		}
+		
+	}
+	
+	private function _init_cluster($redis_config)
+	{
+		$cluster_list = $redis_config['cluster_list'];
+		try{
+			$this -> _redis = new RedisCluster(
+					NULL, $cluster_list
+			);
+		} catch (Exception $e) {
+			show_error('Can not connect to Redis Cluster. Message:' . $e -> getMessage());
+		}
+	}
+	
+	
+	
+	private function _init_redis($redis_config)
+	{
+
 		$this -> _host = $redis_config['host'];
 		$this -> _port = isset($redis_config['port']) ? $redis_config['port'] : 6379;
 		$this -> _db = isset($redis_config['db']) ? $redis_config['db'] : 0;
@@ -38,17 +66,16 @@ class Redis_Model extends CI_Model {
 		
 		$conn_success = FALSE;
 		try {
-	  		$conn_success = $this -> _redis -> connect($this -> _host, $this -> _port);
+			$conn_success = $this -> _redis -> connect($this -> _host, $this -> _port);
 		} catch (Exception $e) {
 			$conn_success = FALSE;
 		}
 		
 		if ( ! $conn_success ) {
-			die('Can not connect Redis Server (' . $this -> _host . ':' . $this -> _port . ')');
+			show_error('Can not connect to Redis Server (' . $this -> _host . ':' . $this -> _port . ')');
 		}
 		
 		$this -> select_db($this -> _db);
-		
 	}
 	
 	/**

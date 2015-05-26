@@ -19,7 +19,15 @@ class Index extends MY_Controller {
 	public function index()
 	{
 		if ( '' === KEY_PREFIX ) {
-			$db_size = $this -> redis_model -> get_keys_count();
+			if (CLUSTER_MODE) {
+				$redis = $this -> redis_model -> get_redis_instance();
+				$db_size = 0;
+				foreach($redis -> _masters() as $s) {
+					$db_size += $redis -> dbsize($s);
+				}
+			} else {
+				$db_size = $this -> redis_model -> get_keys_count();
+			}
 		} else {
 			$redis_keys = $this -> redis_model -> get_all_keys(KEY_PREFIX);
 			$db_size = count($redis_keys);
@@ -49,7 +57,7 @@ class Index extends MY_Controller {
 			$page_data['iframe_url'] = site_url(http_build_query($query));
 		}
 		
-		$page_data['title'] = PROJECT_NAME . ' v' . VERSION;
+		$page_data['title'] = PROJECT_NAME;
 		
 		$this -> load -> view('index', $page_data);
 	}

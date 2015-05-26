@@ -28,6 +28,7 @@
 			</option>
 			<?php } ?>
 		</select>
+		<?php if ( ! CLUSTER_MODE ) { ?>
 		&nbsp;&nbsp;&nbsp;
 		DB:
 		<select id="redis_db">
@@ -37,9 +38,13 @@
 			</option>
 			<?php }?>
 		</select>
+		<?php } else { ?>
+		<input type="hidden" id="redis_db" value="0" />
+		<?php } ?>
 	</p>
 	<p> 
-	<a href="<?= manager_site_url('info', 'index'); ?>"><img src="<?= base_url('static/images/info.png'); ?>" width="16" height="16" title="环境信息" alt="环境信息"></a> 
+	<a href="<?= manager_site_url('overview', 'index'); ?>"><img src="<?= base_url('static/images/calendar.gif'); ?>" width="16" height="16" title="概况" alt="概况"></a> 
+	<a href="<?= manager_site_url('info', 'index'); ?>"><img src="<?= base_url('static/images/info.png'); ?>" width="16" height="16" title="详细信息" alt="详细信息"></a> 
 	<a href="<?= manager_site_url('export', 'index'); ?>"><img src="<?= base_url('static/images/export.png'); ?>" width="16" height="16" title="导出所有数据" alt="导出所有数据"></a> 
 	<a href="<?= manager_site_url('import', 'index'); ?>"><img src="<?= base_url('static/images/import.png'); ?>" width="16" height="16" title="导入数据" alt="导入数据"></a> 
 	<a href="<?= manager_site_url('overview', 'index', 'viewall=1'); ?>"><img src="<?= base_url('static/images/favicon.png'); ?>" width="16" height="16" title="服务器一览表" alt="服务器一览表"></a> 

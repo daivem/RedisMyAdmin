@@ -45,6 +45,17 @@
 			<td><div>上次保存：</div></td>
 			<td><div>&nbsp;</div></td>
 		</tr>
+		<?php
+			} elseif ( isset($info[$i]['cluster_list']) ) {
+		?>
+		<tr>
+			<td><div>集群服务器：</div></td>
+			<td><div><?= implode('<br />', $info[$i]['cluster_list']) ?></div></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td><a href="<?= manager_site_url('overview', 'index', array('server_id' => $i)) ?>">查看</a></td>
+		</tr>
 		<?php 
 			} else {
 		?>

@@ -19,6 +19,9 @@ class MY_Controller extends CI_Controller {
 
 	public function __construct(){
 		parent::__construct();
+		error_reporting(E_ALL);
+		ini_set('display_error', TRUE);
+		$this -> _check_phpredis_exists();
 		
 		$this -> load -> helper('url');
 		$this -> load -> helper('form');
@@ -97,10 +100,30 @@ class MY_Controller extends CI_Controller {
 		$this -> redis_config = $this -> server_list[SERVER_ID];
 		$this -> redis_config['db'] = CURRENT_DB;
 		
+		if ( isset($this -> redis_config['cluster_list']) ) {
+			define('CLUSTER_MODE', TRUE);
+		} else{
+			define('CLUSTER_MODE', FALSE);
+		}
+		
+		
 		$this -> load -> model('redis_model');
 		$this -> redis_model -> init($this -> redis_config);
 	}
 	
+	private function _check_phpredis_exists()
+	{
+		if ( ! class_exists('Redis') ) {
+			show_error('缺少核心基类[Redis]，请下载phpredis <a href="https://github.com/phpredis/phpredis" target="_blank">https://github.com/phpredis/phpredis</a>');
+		}
+	}
+	
+	private function _check_Redis_cluster_exists()
+	{
+		if ( ! class_exists('RedisCluster') ) {
+			show_error('缺少Redis集群核心类[RedisCluster]，请下载最新支持集群phpredis的版本 <a href="https://github.com/phpredis/phpredis" target="_blank">https://github.com/phpredis/phpredis</a>');
+		}
+	}
 	
 	/**
 	 * 
