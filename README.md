@@ -38,9 +38,10 @@ application/config/config_auth.php # 登录及验证码配置
 
 v0.3 (2015-05-26)
 
-支持Redis 3.0集群（需phpredis最新版
+支持Redis 3.0集群（需phpredis最新版）
 
 ——————————————————
+
 v0.2.1 
 
 修正不同redis版本中对保存时间的key不同而产生的错误
