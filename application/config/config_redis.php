@@ -6,7 +6,10 @@ $config['server_list'] = array(
 		'host' => '127.0.0.1',
 		'port' => 6379,
 	),
-		
+	/*
+	 * 集群服务器
+	 */
+	/*
 	array(
 		'name' => 'cluster server',
 		'cluster_list' => array(
@@ -17,5 +20,6 @@ $config['server_list'] = array(
 			'127.0.0.1:7011',
 			'127.0.0.1:7012',
 		),
-	),	
+	),
+	*/	
 );
