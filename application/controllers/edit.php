@@ -97,15 +97,17 @@ class Edit extends MY_Controller {
 		
 		if ( $type == 'string' ) {
 			//string
-			$redis -> set($key, $value);
-			
+			$result = $redis -> set($key, $value);
+			if ( ! $result ) {
+				show_error('操作失败');
+			}
 		} elseif ( $type == 'hash' ) {
 			//hash
 			$hkey = get_post_arg('hkey');
 			//只有当hkey存在的时候才操作
 			if ( $hkey !== NULL ) {
 				if ( strlen($hkey) > MAX_KEY_LEN ) {
-					showMessage('Hash Key长度[' . strlen($key) . ']超过限制，当前限制为[' . MAX_KEY_LEN . ']');
+					show_error('Hash Key长度[' . strlen($key) . ']超过限制，当前限制为[' . MAX_KEY_LEN . ']');
 				}
 				
 				//指定读取$_GET中的hkey
@@ -125,7 +127,6 @@ class Edit extends MY_Controller {
 			//list
 			$size = $redis -> lSize($key);
 			
-			$index = $this -> input -> post('index');
 			$index = get_post_arg('index', NULL, 'trim');
 			($index === NULL) && ($index = '');
 			

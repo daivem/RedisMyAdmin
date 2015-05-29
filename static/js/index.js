@@ -118,6 +118,21 @@ function ajaxLoadTree($obj, step) {
 	});
 }
 
+function reloadTree($jqueryObj) {
+    //上锁
+    _global.isLock = true;
+    var id = $jqueryObj.attr("id");
+    $("#" + id + ' > ul').html('');
+
+    ajaxLoadTree($jqueryObj, 1)
+}
+
+function refreshTree(obj) {
+    var $targetObj = $(obj).parent().parent();
+    $targetObj.removeClass('collapsed');
+    reloadTree($targetObj);
+    return false;
+}
 
 function setupTree(){
 	$('li.current').parents('li.folder').removeClass('collapsed');
@@ -135,12 +150,7 @@ function setupTree(){
 		}
 		var t = $(this);
 		if(t.hasClass('collapsed')){
-			//上锁
-			_global.isLock = true;
-			var id = t.attr("id");
-			$("#" + id + ' > ul').html('');
-		
-			ajaxLoadTree($(this), 1)
+            reloadTree($(this));
 		}
 	
 	

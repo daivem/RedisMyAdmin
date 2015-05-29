@@ -67,10 +67,10 @@
 	<p></p>
 	<p></p>
 	<div id="keys">
-		<?php if ( $html_key_tree !== FALSE) { 
+<?php if ( $html_key_tree !== FALSE) { 
 	echo $html_key_tree;
 ?>
-		<script type="text/javascript">
+<script type="text/javascript">
 	bind_tree_event();
 </script>
 		<?php 
@@ -192,4 +192,4 @@ var goPrefix = function() {
 
 </script>
 </body>
-</head>
+</html>

@@ -50,24 +50,41 @@ class Export extends MY_Controller {
 		header('Content-type: '.$ct.'; charset=utf-8');
 		header('Content-Disposition: inline; filename="export.'.$ext.'"');
 			
-		$redis = $this -> redis_model -> get_redis_instance();			
+		$redis = $this -> redis_model -> get_redis_instance();
+		$key = ($key === NULL) ? '*' : $key;
+		
 		if ( $type == 'redis' ) {
 			//导出Redis命令
-			if ( $key !== NULL ) {
-				//导出单个KEY
-				echo $this -> _export_redis($key);
-			} else {
-				//导出所有KEY
-				$keys = $redis -> keys('*');
+			if ( substr($key, -1) == '*' ) {
+				//导出所有KEY 或 部分KEY
+				$keys = $redis -> keys($key);
 				$values = array();
-				foreach($keys as $key) {
-					$values[] = $this -> _export_redis($key);
+				foreach($keys as $k) {
+					$values[] = $this -> _export_redis($k);
 				}
 				echo implode(PHP_EOL, $values);	
+				
+			} else {
+				//导出单个KEY
+				echo $this -> _export_redis($key);
 			}
 		
 		} else {
-			//json格式
+			//导出json格式
+			if ( substr($key, -1) == '*' ) {
+				//导出所有KEY 或 部分KEY
+				$keys = $redis -> keys($key);
+				$values = array();
+				foreach($keys as $k) {
+					$values[$key] = $this -> _export_json($k);
+				}
+				echo json_encode($values);
+			
+			} else {
+				//导出单个KEY
+				echo json_encode( $this -> _export_json($key) );
+			}
+			
 			if ( $key !== NULL ) {
 				//导出单个KEY
 				echo json_encode( $this -> _export_json($key) );
@@ -100,7 +117,7 @@ class Export extends MY_Controller {
 	
 		$type = $redis -> type($key);
 		
-		if (!isset($redis_types[$type])) {
+		if ( ! isset($redis_types[$type]) ) {
 			return;
 		}
 	
