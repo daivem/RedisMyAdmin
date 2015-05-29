@@ -76,7 +76,7 @@ class Export extends MY_Controller {
 				$keys = $redis -> keys($key);
 				$values = array();
 				foreach($keys as $k) {
-					$values[$key] = $this -> _export_json($k);
+					$values[$k] = $this -> _export_json($k);
 				}
 				echo json_encode($values);
 			
@@ -85,19 +85,6 @@ class Export extends MY_Controller {
 				echo json_encode( $this -> _export_json($key) );
 			}
 			
-			if ( $key !== NULL ) {
-				//导出单个KEY
-				echo json_encode( $this -> _export_json($key) );
-			} else {
-				//导出所有KEY
-				$keys = $redis -> keys('*');
-				$values = array();
-					
-				foreach($keys as $key) {
-					$values[$key] = $this -> _export_json($key);
-				}
-				echo json_encode($values);
-			}
 		}
 		
 		die();
