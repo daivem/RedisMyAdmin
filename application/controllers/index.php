@@ -104,6 +104,8 @@ class Index extends MY_Controller {
 				//因为dom的ID不能包含冒号: 所以将:替换为___
 				$tree_sub2[] = '<li class="folder' . (empty($full_key) ? '' : ' collapsed') . ($is_last ? ' last' : '') .'" title="' . urlencode($full_key) . '" id="keyid_' . str_replace(SEPERATOR, '___', $full_key) . '">';
 				$tree_sub2[] = '<div class="icon">' . format_html($name) . '&nbsp;<span class="info">(' . count($item) . ')</span>';
+				$tree_sub2[] =  (!empty($full_key)) ? '<a href="#" class="refresh" onclick="return refreshTree(this)"><img src="' . base_url('static/images/refresh.png') . '" width="10" height="10" title="刷新整个树" alt="[X]"></a>' : '';
+				$tree_sub2[] =  (!empty($full_key)) ? '<a href="' . manager_site_url('export', 'index', 'key=' . urlencode($full_key) . ':*') . '" class="export"><img src="' . base_url('static/images/export.png') . '" width="10" height="10" title="导出整个树" alt="[X]"></a>' : '';
 				$tree_sub2[] =  (!empty($full_key)) ? '<a href="' . manager_site_url('delete', 'index', 'tree=' . urlencode($full_key) . ':') . '" class="deltree"><img src="' . base_url('static/images/delete.png') . '" width="10" height="10" title="删除整个树" alt="[X]"></a>' : '';
 				$tree_sub2[] = '</div>';
 				$tree_sub2[] = '<ul>';

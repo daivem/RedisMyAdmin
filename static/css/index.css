@@ -97,14 +97,13 @@ background-image: url(../images/tree-lastnode-expanded.gif);
 background-image: url(../images/tree-lastnode-collapsed.gif);
 }
 
-#keys .deltree {
+#keys .refresh, #keys .export, #keys .deltree {
 display: none;
 }
 
-#keys .icon:hover .deltree {
+#keys .icon:hover .refresh , #keys .icon:hover .export, #keys .icon:hover .deltree{
 display: inline;
 }
-
 
 #frame {
 position: fixed;
