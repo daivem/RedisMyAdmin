@@ -139,7 +139,6 @@ function setupTree(){
 
 	$('li.folder').unbind('click');
 	$('li.folder').click(function(e) {
-		
 		//对于A标签不防止重复点击
 		//主要用于在ajax加载列表的时候可以点击具体的KEY查看数据
 		if (e.target.localName != 'a') {
@@ -149,6 +148,7 @@ function setupTree(){
 			} 
 		}
 		var t = $(this);
+        console.log(t);
 		if(t.hasClass('collapsed')){
             reloadTree($(this));
 		}
@@ -172,6 +172,7 @@ function setupTree(){
 		}
 	});
 
+    
 	$('#sidebar a:not(.deltree)').click(function(e) {
 
 		e.preventDefault();
@@ -197,20 +198,21 @@ function setupTree(){
 		$(this).parent().addClass('current');
 	});
 	
-	
+	$('.deltree').unbind('click');
 	$('.deltree').click(function(e) {
 		e.preventDefault();
-		
+
 		if (confirm('确定要删除整个树及其所有的键吗？')) {
-			$.ajax({
+    		$.ajax({
 				type: "POST",
 				url: this.href,
-				data: 'post=1',
+				data: {},
 				timeout: 120000,
 				success: function(url) {
 					top.location.href = url;
 				}
 			});
-		}
+    	} else {
+        }
 	});
 }
