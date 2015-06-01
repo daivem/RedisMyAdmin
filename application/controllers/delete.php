@@ -15,6 +15,10 @@ class Delete extends MY_Controller {
 
 	public function index()
 	{
+		if ( ! $this -> is_post() ) {
+			return ;
+		}
+		//die('ssss');
 		$key = get_arg('key');
 		$type = strtolower( get_arg('type') );
 		$allow_type = array('' ,'string', 'hash', 'list', 'set', 'zset');
@@ -84,7 +88,7 @@ class Delete extends MY_Controller {
 			}
 		}
 		
-		$url = manager_site_url('overview', 'index');
+		$url = manager_site_url('index', 'overview');
 		die($url);
 	}
 	
