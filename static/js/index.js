@@ -148,7 +148,6 @@ function setupTree(){
 			} 
 		}
 		var t = $(this);
-        console.log(t);
 		if(t.hasClass('collapsed')){
             reloadTree($(this));
 		}
