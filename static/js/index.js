@@ -211,7 +211,7 @@ function setupTree(){
 					top.location.href = url;
 				}
 			});
-    	} else {
-        }
+    	}
+        return false;
 	});
 }
