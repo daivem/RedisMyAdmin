@@ -78,6 +78,20 @@ class Redis_Model extends CI_Model {
 		$this -> select_db($this -> _db);
 	}
 	
+	public function get_db_size()
+	{
+		if (CLUSTER_MODE) {
+			$redis = $this -> get_redis_instance();
+			$db_size = 0;
+			foreach($redis -> _masters() as $s) {
+				$db_size += $redis -> dbsize($s);
+			}
+		} else {
+			$db_size = $this -> get_keys_count();
+		}
+		return $db_size;
+	}
+	
 	/**
 	 * 
 	 * 选择数据库
