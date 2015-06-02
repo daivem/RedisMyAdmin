@@ -52,7 +52,12 @@
 	<a href="<?= manager_site_url('login', 'logout'); ?>"><img src="<?= base_url('static/images/logout.png'); ?>" width="16" height="16" title="退出登录" alt="退出登录"></a> &nbsp;&nbsp;&nbsp;<img id="waiting" src='static/images/waiting.gif' class='waiting' style="display:none; width:16px; height:16px;"/> 
 	<?php } ?>
 	</p>
-	<p> <a href="<?= manager_site_url('edit', 'index'); ?>" class="add">新增一个键</a> </p>
+	<p> 
+		<a href="<?= manager_site_url('edit', 'index'); ?>" class="add">新增一个键</a> 
+	</p>
+	<p class="subnav">
+		<a href="<?= manager_site_url('idle', 'index'); ?>">空闲key列表</a>
+	</p>
 	<p> 在当前列表中查找：
 		<input type="text" id="filter" size="24" value="关键字" class="info">
 	</p>

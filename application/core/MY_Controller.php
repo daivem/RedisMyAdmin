@@ -180,24 +180,17 @@ class MY_Controller extends CI_Controller {
 		}
 	}
 	
-	
 	protected function _create_key_tree_head( & $item, $name, $full_key, $is_last, & $return_html)
 	{
 		if ( isset($item[TREE_END_SIGN]) ) {
 			//需要unset掉，否则会影响到节点的判断
 			unset($item[TREE_END_SIGN]);
 		
-			$type = $this -> redis_model ->  get_key_type($full_key);
 			
-			if ( !isset($this -> _redis_types[$type]) ) {
-				return;
-			}
-		
-			$type  = $this -> _redis_types[$type];
 			$class = array();
 			$len   = FALSE;
 			
-			$current = $this -> input -> get('key');
+			$current = get_arg('key');
 		
 			if ( $current && ($full_key == $current)) {
 				$class[] = 'current';
@@ -209,6 +202,13 @@ class MY_Controller extends CI_Controller {
 			$redis = $this -> redis_model -> get_redis_instance();
 
 			if ( ! FAST_MODEL ) {
+				$type = $this -> redis_model ->  get_key_type($full_key);
+					
+				if ( !isset($this -> _redis_types[$type]) ) {
+					return;
+				}
+				
+				$type  = $this -> _redis_types[$type];				
 				switch ($type) {
 					case 'hash':
 						$len = $redis -> hLen($full_key);
