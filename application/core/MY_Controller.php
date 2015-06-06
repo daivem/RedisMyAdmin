@@ -26,6 +26,9 @@ class MY_Controller extends CI_Controller {
 		$this -> load -> helper('url');
 		$this -> load -> helper('form');
 		$this -> load -> helper('common');
+		
+
+		$this -> widget('pager');
 
 		global $RTR;
 		
@@ -124,6 +127,19 @@ class MY_Controller extends CI_Controller {
 			show_error('缺少Redis集群核心类[RedisCluster]，请下载最新支持集群phpredis的版本 <a href="https://github.com/phpredis/phpredis" target="_blank">https://github.com/phpredis/phpredis</a>');
 		}
 	}
+
+	/**
+	 *
+	 * widget
+	 * @param string $name widget name
+	 */
+	protected function widget($name = '')
+	{
+		if (isset($name) && $name != '')
+		{
+			require_once APPPATH.'widgets/'.$name. '_widget' . EXT;
+		}
+	}
 	
 	/**
 	 * 
@@ -136,6 +152,17 @@ class MY_Controller extends CI_Controller {
 		$page_data['prefix'] = KEY_PREFIX;
 		$page_data['server_id'] = SERVER_ID;
 		$page_data['project_name'] = PROJECT_NAME;
+		
+		$c = 'index';
+		$m = 'index';
+		$bt = debug_backtrace();
+		if ( count($bt) > 1 ) {
+			$c = strtolower($bt[1]['class']);
+			$m = strtolower($bt[1]['function']);
+		}
+		
+		$page_data['c'] = $c;
+		$page_data['m'] = $m;
 		
 		return $page_data;
 	}
