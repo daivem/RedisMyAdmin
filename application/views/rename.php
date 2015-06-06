@@ -11,4 +11,6 @@
 	<p>
 		<input type="submit" class="button" value="重命名">
 	</p>
-</form><?php PagerWidget::footer(); ?>
+</form>
+
+<?php PagerWidget::footer(); ?>

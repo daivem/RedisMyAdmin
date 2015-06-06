@@ -17,4 +17,6 @@
 	<p>
 		<input type="submit" class="button" value="导入">
 	</p>
-</form><?php PagerWidget::footer(); ?>
+</form>
+
+<?php PagerWidget::footer(); ?>

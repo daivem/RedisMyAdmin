@@ -9,10 +9,10 @@
 			验证码：<input type="text" id="seccode" name="seccode" />
 			</p>
 			<p>
-            <img src="about:blank" style="border:0; margin-left:5px;" 
-            onerror="document.getElementById('login_secImgTag').src='<?= manager_site_url('login', 'seccode'); ?>&'+Math.random();" 
-            title="换一个" id="login_secImgTag" 
-            onClick="document.getElementById('login_secImgTag').src='<?= manager_site_url('login', 'seccode'); ?>&'+Math.random();"  /> 
+	            <img src="about:blank" style="border:0; margin-left:5px;" 
+		            onerror="document.getElementById('login_secImgTag').src='<?= manager_site_url('login', 'seccode'); ?>&'+Math.random();" 
+		            title="换一个" id="login_secImgTag" 
+        		    onClick="document.getElementById('login_secImgTag').src='<?= manager_site_url('login', 'seccode'); ?>&'+Math.random();"  /> 
 			</p>
 			<?php } ?>
 			<p><input type="submit" value="登录" /></p>
@@ -28,5 +28,5 @@ if ( self != top ) {
 	top.location.href = self.location.href;
 }
 </script>
-</body>
-</html>
+
+<?php PagerWidget::footer(); ?>
