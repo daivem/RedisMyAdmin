@@ -31,4 +31,6 @@
 		}
 
 	?>
-</table><?php PagerWidget::footer(); ?>
+</table>
+
+<?php PagerWidget::footer(); ?>

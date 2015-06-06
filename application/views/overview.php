@@ -76,7 +76,7 @@
 			<td>
 				<div><?= ( $last_save_time === NULL ? '未知' : format_ago(time() - $last_save_time, true) ) ?> 
 					<a href="<?= manager_site_url('save', 'index'); ?>">
-						<img src="<?= base_url('static/images/save.png'); ?>" width="16" height="16" title="目前保存" alt="[S]" class="imgbut">
+						<img src="<?= base_url('static/images/save.png'); ?>" width="16" height="16" title="立刻保存" alt="立刻保存" class="imgbut"  />
 					</a>
 				</div>
 			</td>
@@ -86,4 +86,6 @@
 		?>
 	</table>
 </div>
-<?php } ?><?php PagerWidget::footer(); ?>
+<?php } ?>
+
+<?php PagerWidget::footer(); ?>

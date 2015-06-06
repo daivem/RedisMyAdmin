@@ -45,4 +45,6 @@
 		</tr>
 	</table>
 </div>
-<?php } ?><?php PagerWidget::footer(); ?>
+<?php } ?>
+
+<?php PagerWidget::footer(); ?>
