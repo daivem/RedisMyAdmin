@@ -1,23 +1,5 @@
-<!DOCTYPE html>
-<html lang=en>
-<head>
-<meta charset=utf-8>
-<?php if (is_ie()){ ?>
-<meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1">
-<?php } ?>
-<meta name=format-detection content="telephone=no">
-<title>
-<?= $title; ?>
-</title>
-<link rel=stylesheet href="<?= base_url('static/css/common.css'); ?>" media=all>
-<link rel=stylesheet href="<?= base_url('static/css/index.css'); ?>" media=all>
-<link rel="shortcut icon" href="<?= base_url('static/images/favicon.png'); ?>">
-<script src="<?= base_url('static/js/jquery-1.7.2.min.js'); ?>" type="text/javascript"></script>
-<script src="<?= base_url('static/js/index.js'); ?>" type="text/javascript"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head>
+<?php PagerWidget::header(); ?>
 
-<body>
 <div id="sidebar">
 	<h1 class="logo"><a href="<?= manager_site_url('overview', 'index'); ?>"><?= $project_name; ?></a></h1>
 	<p>
@@ -43,16 +25,19 @@
 		<?php } ?>
 	</p>
 	<p> 
-	<a href="<?= manager_site_url('overview', 'index'); ?>"><img src="<?= base_url('static/images/calendar.gif'); ?>" width="16" height="16" title="概况" alt="概况"></a> 
-	<a href="<?= manager_site_url('info', 'index'); ?>"><img src="<?= base_url('static/images/info.png'); ?>" width="16" height="16" title="详细信息" alt="详细信息"></a> 
-	<a href="<?= manager_site_url('export', 'index'); ?>"><img src="<?= base_url('static/images/export.png'); ?>" width="16" height="16" title="导出所有数据" alt="导出所有数据"></a> 
-	<a href="<?= manager_site_url('import', 'index'); ?>"><img src="<?= base_url('static/images/import.png'); ?>" width="16" height="16" title="导入数据" alt="导入数据"></a> 
-	<a href="<?= manager_site_url('overview', 'index', 'viewall=1'); ?>"><img src="<?= base_url('static/images/favicon.png'); ?>" width="16" height="16" title="服务器一览表" alt="服务器一览表"></a> 
+		<a href="<?= manager_site_url('overview', 'index'); ?>"><img src="<?= base_url('static/images/calendar.gif'); ?>" width="16" height="16" title="概况" alt="概况"></a> 
+		<a href="<?= manager_site_url('info', 'index'); ?>"><img src="<?= base_url('static/images/info.png'); ?>" width="16" height="16" title="详细信息" alt="详细信息"></a> 
+		<a href="<?= manager_site_url('export', 'index'); ?>"><img src="<?= base_url('static/images/export.png'); ?>" width="16" height="16" title="导出所有数据" alt="导出所有数据"></a> 
+		<a href="<?= manager_site_url('import', 'index'); ?>"><img src="<?= base_url('static/images/import.png'); ?>" width="16" height="16" title="导入数据" alt="导入数据"></a> 
+		<a href="<?= manager_site_url('overview', 'index', 'viewall=1'); ?>"><img src="<?= base_url('static/images/favicon.png'); ?>" width="16" height="16" title="服务器一览表" alt="服务器一览表"></a> 	
+		<a href="<?= manager_site_url('idle', 'index'); ?>"><img src="<?= base_url('static/images/zoom.png'); ?>" width="16" height="16" title="空闲key列表" alt="空闲key列表"></a> 
 	<?php if (AUTH) { ?>
-	<a href="<?= manager_site_url('login', 'logout'); ?>"><img src="<?= base_url('static/images/logout.png'); ?>" width="16" height="16" title="退出登录" alt="退出登录"></a> &nbsp;&nbsp;&nbsp;<img id="waiting" src='static/images/waiting.gif' class='waiting' style="display:none; width:16px; height:16px;"/> 
+		<a href="<?= manager_site_url('login', 'logout'); ?>"><img src="<?= base_url('static/images/logout.png'); ?>" width="16" height="16" title="退出登录" alt="退出登录"></a> &nbsp;&nbsp;&nbsp;<img id="waiting" src='static/images/waiting.gif' class='waiting' style="display:none; width:16px; height:16px;"/> 
 	<?php } ?>
 	</p>
-	<p> <a href="<?= manager_site_url('edit', 'index'); ?>" class="add">新增一个键</a> </p>
+	<p> 
+		<a href="<?= manager_site_url('edit', 'index'); ?>" class="add">新增一个键</a> 
+	</p>
 	<p> 在当前列表中查找：
 		<input type="text" id="filter" size="24" value="关键字" class="info">
 	</p>
@@ -190,6 +175,4 @@ var goPrefix = function() {
 	top.location.href = href;
 }
 
-</script>
-</body>
-</html>
+</script><?php PagerWidget::footer(); ?>

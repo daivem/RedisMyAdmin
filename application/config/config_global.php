@@ -21,6 +21,9 @@ $config['max_key_len'] = 200;
  */
 $config['faster_model'] = 1;
 
+
+$config['idle_key'] = '___idle___';
+
 /*
  * 建树时的一个标志
  */

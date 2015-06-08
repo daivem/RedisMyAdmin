@@ -19,15 +19,7 @@ class Index extends MY_Controller {
 	public function index()
 	{
 		if ( '' === KEY_PREFIX ) {
-			if (CLUSTER_MODE) {
-				$redis = $this -> redis_model -> get_redis_instance();
-				$db_size = 0;
-				foreach($redis -> _masters() as $s) {
-					$db_size += $redis -> dbsize($s);
-				}
-			} else {
-				$db_size = $this -> redis_model -> get_keys_count();
-			}
+			$db_size = $this -> redis_model -> get_db_size();  
 		} else {
 			$redis_keys = $this -> redis_model -> get_all_keys(KEY_PREFIX);
 			$db_size = count($redis_keys);
@@ -182,6 +174,12 @@ class Index extends MY_Controller {
 	public function info()
 	{
 		$this -> _current_method = 'info';
+		$this -> index();
+	}
+
+	public function idle()
+	{
+		$this -> _current_method = 'idle';
 		$this -> index();
 	}
 	
