@@ -1,7 +1,7 @@
 <?php
 
 $config['project_name'] = 'RedisMyAdmin';
-$config['version'] = '0.3';
+$config['version'] = '0.3.3';
 
 /*
  * 建树时的分隔符
