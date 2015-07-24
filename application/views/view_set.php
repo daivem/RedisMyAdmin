@@ -3,14 +3,11 @@
 	<?= format_html($key)?>
 	<?php if ($exists) { ?>
 	<a href="<?= manager_site_url('rename', 'index', 'key=' . urlencode($key)); ?>">
-		<img src="<?= base_url('static/images/edit.png'); ?>" width="16" height="16" title="重命名" alt="重命名" />
-	</a> 
+		<img src="<?= base_url('static/images/edit.png'); ?>" width="16" height="16" title="重命名" alt="重命名" /></a>
 	<a href="<?= manager_site_url('delete', 'index', 'key=' . urlencode($key)); ?>" class="delkey">
-		<img src="<?= base_url('static/images/delete.png'); ?>" width="16" height="16" title="删除" alt="删除" />
-	</a> 
+		<img src="<?= base_url('static/images/delete.png'); ?>" width="16" height="16" title="删除" alt="删除" /></a>
 	<a href="<?= manager_site_url('export', 'index', 'key=' . urlencode($key)); ?>">
-		<img src="<?= base_url('static/images/export.png'); ?>" width="16" height="16" title="导出" alt="导出" />
-	</a>
+		<img src="<?= base_url('static/images/export.png'); ?>" width="16" height="16" title="导出" alt="导出" /></a>
 	<?php } ?>
 </h2>
 <?php 
