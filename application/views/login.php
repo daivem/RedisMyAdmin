@@ -1,7 +1,7 @@
 <?php PagerWidget::header(); ?>
 <div style="margin:0 auto; width:960px">
 	<div style="width:300px; margin:0 auto; padding-top:50px;">
-		<form method="POST" action="">
+		<form method="POST" action="<?= manager_site_url('login', 'index'); ?>">
 			<p>账　号：<input type="text" name="username" /></p>
 			<p>密　码：<input type="password" name="password" /></p>
 			<?php if ($seccode_enable) { ?>
