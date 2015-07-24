@@ -11,6 +11,7 @@
 <link rel="shortcut icon" href="<?= base_url('static/images/favicon.png'); ?>">
 <script src="<?= base_url('static/js/jquery-1.7.2.min.js'); ?>" type="text/javascript"></script>
 <script src="<?= base_url('static/js/index.js'); ?>" type="text/javascript"></script>
+<script src="<?= base_url('static/js/frame.js'); ?>" type="text/javascript"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 
