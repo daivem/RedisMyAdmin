@@ -30,7 +30,7 @@ $(function() {
 	  request['server_id'] = server;
 	  request['db'] = db;
 	  
-	  var url = 'http://' + location.hostname + location.pathname + '?';
+	  var url = 'http://' + location.host + location.pathname + '?';
 	  for(var i in request) {
 		  
 		  url += i + ( (typeof request[i] == 'undefined' || request[i] == 'undefined') ? '' : '=' + request[i] );
