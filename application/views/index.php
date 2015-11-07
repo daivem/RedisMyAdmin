@@ -55,8 +55,11 @@
 <?php if ( $html_key_tree !== FALSE) { 
 	echo $html_key_tree;
 ?>
+
 <script type="text/javascript">
+$(document).ready(function(){
 	bind_tree_event();
+})
 </script>
 		<?php 
 } else {
