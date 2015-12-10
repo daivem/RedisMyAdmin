@@ -7,6 +7,7 @@ class Redis_Model extends CI_Model {
 	private $_host;
 	private $_port;
 	private $_db;
+	private $_auth;
 	
 	public function __construct()
 	{
@@ -50,6 +51,10 @@ class Redis_Model extends CI_Model {
 		} catch (Exception $e) {
 			show_error('Can not connect to Redis Cluster. Message:' . $e -> getMessage());
 		}
+		
+		if ( ! $this -> auth() ) {
+			show_error('Redis Server (' . $this -> _host . ':' . $this -> _port . ') 认证密码错误!');
+		}
 	}
 	
 	
@@ -60,6 +65,7 @@ class Redis_Model extends CI_Model {
 		$this -> _host = $redis_config['host'];
 		$this -> _port = isset($redis_config['port']) ? $redis_config['port'] : 6379;
 		$this -> _db = isset($redis_config['db']) ? $redis_config['db'] : 0;
+		$this -> _auth = isset($redis_config['auth']) ? $redis_config['auth'] : FALSE;
 		
 		
 		$this -> _redis = new Redis();
@@ -101,9 +107,25 @@ class Redis_Model extends CI_Model {
 	{
 		$db = (int)$db;
 		$this -> _db = $db;
-		$this -> _redis -> select($this -> _db);
+		try {
+			$this -> _redis -> select($this -> _db);
+		} catch (Exception $e) {
+			show_error('连接服务器时发生错误：' . $e -> getMessage());
+		}
 	}
 	
+	/**
+	 * 设置认证密码
+	 */
+	public function auth()
+	{
+		if ( ( FALSE !== $this -> _auth )
+			&& ( NULL !== $this -> _auth )
+		){
+			return $this -> _redis -> auth($this -> _auth);
+		}
+		return TRUE;
+	}
 	
 	/**
 	 * 
