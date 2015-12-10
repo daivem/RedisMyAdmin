@@ -41,6 +41,7 @@ application/config/config_auth.php # 登录及验证码配置
 v0.3.6 (2015-12-11)
 
 增加对redis自带的auth身份验证的支持（详见application/config/config_redis.php）
+注：集群暂不支持
 
 修改string类型的key的value时，可选择保持其原有生存期(ttl)不变
 
