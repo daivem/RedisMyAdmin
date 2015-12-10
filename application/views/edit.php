@@ -35,7 +35,15 @@
 		<textarea name="value" id="value" cols="80" rows="20"><?= nl2br(format_html($value))?></textarea>
 	</p>
 	<input type="hidden" name="oldvalue" value="<?= format_html($value)?>">
+    <?php 
+            if ( ($type == 'string') && ($is_edit) ) {
+    ?>
+    <p><input type="checkbox" name="keep_ttl" value="1" checked>保持生存期(ttl)不变</p>
+    <?php
+        }
+    ?>
 	<p>
+
 		<input type="submit" class="button" value="<?= $is_edit ? '编辑' : '新增'?>">
 	</p>
 </form>

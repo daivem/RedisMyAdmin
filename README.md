@@ -38,6 +38,14 @@ application/config/config_auth.php # 登录及验证码配置
 -----------------------------------------------
 更新日志：
 
+v0.3.6 (2015-12-11)
+
+增加对redis自带的auth身份验证的支持（详见application/config/config_redis.php）
+
+修改string类型的key的value时，可选择保持其原有生存期(ttl)不变
+
+——————————————————
+
 v0.3.5 (2015-11-07)
 
 修正了部分JS的错误

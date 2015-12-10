@@ -97,9 +97,17 @@ class Edit extends MY_Controller {
 		
 		if ( $type == 'string' ) {
 			//string
+			$keep_ttl = get_post_arg('keep_ttl', 0, 'intval');
+			$orig_ttl = 0;
+			if ( $keep_ttl ) {
+				$orig_ttl = (int)$redis -> ttl($key);
+			}
 			$result = $redis -> set($key, $value);
 			if ( ! $result ) {
 				show_error('操作失败');
+			}
+			if ($orig_ttl > 0) {
+				$redis -> expire($key, $orig_ttl);
 			}
 		} elseif ( $type == 'hash' ) {
 			//hash
@@ -116,7 +124,7 @@ class Edit extends MY_Controller {
 					&& ( ! $redis -> hExists($key, $hkey) )
 				){
 					//如果新的hkey不存在的话
-					//删掉用来的旧KEY
+					//删掉原来的旧KEY
 					$redis -> hDel($key, $old_hkey);
 				}
 				

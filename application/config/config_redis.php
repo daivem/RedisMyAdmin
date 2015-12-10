@@ -5,6 +5,7 @@ $config['server_list'] = array(
 		'name' => 'localhost server', 
 		'host' => '127.0.0.1',
 		'port' => 6379,
+		'auth' => FALSE, //如无密码，可不设置此键，或将值设置为FALSE or NULL
 	),
 	/*
 	 * 集群服务器
@@ -21,5 +22,5 @@ $config['server_list'] = array(
 			'127.0.0.1:7012',
 		),
 	),
-	*/	
+	*/
 );
