@@ -80,6 +80,9 @@ class Redis_Model extends CI_Model {
 		if ( ! $conn_success ) {
 			show_error('Can not connect to Redis Server (' . $this -> _host . ':' . $this -> _port . ')');
 		}
+		if ( ! $this -> auth() ) {
+			show_error('Redis Server (' . $this -> _host . ':' . $this -> _port . ') 认证密码错误!');
+		} 		
 		
 		$this -> select_db($this -> _db);
 	}
