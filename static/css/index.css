@@ -23,13 +23,23 @@ text-decoration: none;
 text-decoration: underline;
 }
 
+#keys_tree{
+	position: fixed;
+	overflow-x: auto;
+	overflow-y: scroll;
+	width:32em;
+	bottom: 0;
+	top: 18em;
+}
+
 #keys {
 position: fixed;
 top: 20.5em;
 bottom: 0;
-width: 33em;
+width: 32em;
 padding-bottom: 1em;
-overflow: auto;
+overflow-x: auto;
+overflow-y: scroll;
 }
 
 #keys ul {

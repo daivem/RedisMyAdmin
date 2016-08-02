@@ -151,19 +151,53 @@ class Redis_Model extends CI_Model {
 	 * 取得当前DB所有KEYS
 	 * @param unknown_type $prefix
 	 */
-	public function get_all_keys($prefix = '')
+	public function get_all_keys($prefix = '', $need_sort = TRUE)
 	{
+		if ( method_exists($this -> _redis, 'scan') ) {
+			return $this -> get_all_keys_by_scan($prefix, $need_sort);
+		}
+
 		if ( !empty($prefix) ) {
 		    $keys = $this -> _redis -> keys($prefix . '*');
 		} else {
 		    $keys = $this -> _redis -> keys('*');
 		}
-		
-		sort($keys);		
+	
+		if ( $need_sort ) {
+			sort($keys);		
+		}
+		return $keys;
+	}
+
+	public function get_all_keys_by_scan($prefix = '', $need_sort = TRUE)
+	{
+		$keys = array();
+		$scan_prefix = empty($prefix) ? NULL : $prefix . '*';
+		$this -> _redis -> setOption(Redis::OPT_SCAN, Redis::SCAN_RETRY);	
+		$iterator = NULL;
+		while ($arr_keys = $this -> _redis -> scan($it, $scan_prefix, 1000)) {
+			$keys = array_merge($keys, $arr_keys);
+		}
+
+		if ( $need_sort ) {
+			sort($keys);		
+		}
 		return $keys;
 	}
 	
-	
+	public function scan_keys($prefix, $iterator, $need_sort = TRUE)
+	{
+		$keys = array();
+		$scan_prefix = empty($prefix) ? NULL : $prefix . '*';
+		$this -> _redis -> setOption(Redis::OPT_SCAN, Redis::SCAN_RETRY);	
+		$keys = $this -> _redis -> scan($iterator, $scan_prefix, TREE_KEY_PAGE_SIZE);
+
+		if ( $need_sort ) {
+			sort($keys);	
+		}
+		return array('iterator' => $iterator, 'keys' => $keys);
+
+	}	
 	
 	public function get_redis_types() {
 		// phpredis types to string conversion array.
