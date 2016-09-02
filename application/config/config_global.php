@@ -1,7 +1,7 @@
 <?php
 
 $config['project_name'] = 'RedisMyAdmin';
-$config['version'] = '0.3.3';
+$config['version'] = '0.4.0';
 
 /**
  * PHP执行时间
@@ -37,7 +37,7 @@ $config['idle_key'] = '___idle___';
 
 /*
  * 临界点
- * 当KEY数量超过此阀值的时候需要手动刷新
+ * 当KEY数量超过此阈值的时候需要手动刷新
  * 设为0则关闭此功能
  */
 $config['db_size_critical'] = 20000;

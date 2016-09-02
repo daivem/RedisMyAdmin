@@ -36,7 +36,7 @@
 	<?php } ?>
 	</p>
 	<p> 
-		<a href="<?= manager_site_url('edit', 'index'); ?>" class="add">新增一个键</a> 
+		<a target="iframe" href="<?= manager_site_url('edit', 'index'); ?>" class="add">新增一个键</a> 
 	</p>
 	<div>
 	<form onSubmit="return false">
@@ -69,7 +69,7 @@
 		<p> 当前数据库的KEY总量为：
 			<?= $db_size ?>
 			<br />
-			到达服务器限制的临界值：
+			到达服务器限制的阈值：
 			<?= $db_size_critical; ?>
 		</p>
 		<input type="button" id="btn_load_data" value="加载数据" onClick="startLoadData()" />
@@ -90,15 +90,17 @@
 var _global = _global || {};
 <?php
 $uri = $_SERVER['QUERY_STRING'];
-$uri_arr = explode('&', $uri);
-$unset_arr = array('c', 'm', 'key');
-foreach($uri_arr as $k => $v) {
-	list($_k, $_v) = explode('=', $v);
-	if ( in_array($_k, $unset_arr)) {
-		unset($uri_arr[$k]);
+$uri_arr = array();
+if ( ! empty($uri) ) {
+	$uri_arr = explode('&', $uri);
+	$unset_arr = array('c', 'm', 'key');
+	foreach($uri_arr as $k => $v) {
+		list($_k, $_v) = explode('=', $v);
+		if ( in_array($_k, $unset_arr)) {
+			unset($uri_arr[$k]);
+		}
 	}
 }
-
 ?>
 _global.urlParams = '<?= implode('&', $uri_arr) ?>';
 _global.isLock = false;

@@ -73,13 +73,10 @@ var addDiyDom = function(treeId, treeNode) {
 	if ( (typeof treeNode['isDir'] != 'undefined')
 		&& ( treeNode['isDir'] )
 	){
-		var childrenCount = treeNode.children.length; 
 		var aObj = $("#" + treeNode.tId + '_a');
 		var urlExport = _global.baseUrl + '?c=export&m=index&key=' + treeNode.id + ':*&' + _global.urlParams;
 		var urlDelete = _global.baseUrl + '?c=delete&m=index&tree=' + treeNode.id + ':&' + _global.urlParams;
-		var editStr = '';
-		editStr += " <i style='color:#aaa;'>(" + childrenCount + ")</i> ";
-		editStr += "<a id='diyBtn1_" +treeNode.id+ "' title='导出当前节点' target='iframe'  href='" + urlExport + "' style='margin:0 0 0 5px;'><img src='static/images/export.png' style='width:10px;height:10px;' /></a>";
+		var editStr = "<a id='diyBtn1_" +treeNode.id+ "' title='导出当前节点' target='iframe'  href='" + urlExport + "' style='margin:0 0 0 5px;'><img src='static/images/export.png' style='width:10px;height:10px;' /></a>";
 		editStr += "<a id='diyBtn2_" +treeNode.id+ "'  title='删除当前节点树' href='" + urlDelete + "' onclick='return delTree(this)' style='margin:0 0 0 5px;'><img src='static/images/delete.png' style='width:10px;height:10px;' /></a>";
 		aObj.append(editStr);
 	}
@@ -115,7 +112,110 @@ var redisAdmin = function(options){
 	this.existsNodeKey = {}
 }
 
+redisAdmin.prototype.transformTozTreeFormat = function(pageSize) {
+	this.formatedData = [];
+	var i,l,
+	key = this.treeNodeSetting.idKey,
+	parentKey = this.treeNodeSetting.pIdKey,
+	childKey = this.treeNodeSetting.children;
+	if (!key || key=="" || !sNodes) return [];
+
+	var tmpMap = [];
+	for (i=0, l=sNodes.length; i<l; i++) {
+		tmpMap[sNodes[i][key]] = sNodes[i];
+	}
+	for (i=0, l=sNodes.length; i<l; i++) {
+		if (tmpMap[sNodes[i][parentKey]] && sNodes[i][key] != sNodes[i][parentKey]) {
+			if (!tmpMap[sNodes[i][parentKey]][childKey])
+				tmpMap[sNodes[i][parentKey]][childKey] = [];
+			tmpMap[sNodes[i][parentKey]][childKey].push(sNodes[i]);
+		} else {
+			this.formatedData.push(sNodes[i]);
+		}
+	}
+	return this.formatedData;
+}
+
+redisAdmin.prototype.perpareTreeData = function() {
+
+	function copyNode2(srcObj, dstObj, pageSize) {
+		dstObj = {}	
+		dstObj.id = srcObj.id;
+		dstObj.name = srcObj.name;
+		dstObj.pId = srcObj.pId;
+		dstObj.isDir = srcObj.isDir;
+		dstObj.target = srcObj.target;
+		dstObj.url = srcObj.url;
+		if ( typeof srcObj[countKey] != 'undefined' ) {
+			dstObj[countKey] = srcObj[countKey];
+		}
+
+	}
+
+	function copyNode(r, srcObj, dstObj, pageSize) {
+		var i;
+		for (i = 0, l = srcObj.length; i < l; i++ ) {
+			var dstObj = {}	
+			dstObj.id = srcObj.id;
+			dstObj.name = srcObj.name;
+			dstObj.pId = srcObj.pId;
+			dstObj.isDir = srcObj.isDir;
+			dstObj.target = srcObj.target;
+			dstObj.url = srcObj.url;
+			if ( typeof srcObj[countKey] != 'undefined' ) {
+				dstObj[countKey] = srcObj[countKey];
+				var cnt = 0;
+				dstObj[childKey] = [];
+			}
+			r[i] = dstObj;
+
+			if ( typeof srcObj[countKey] != 'undefined' ) {
+				copyNode(r[i], this.formatedData[i], dstObj, 10)
+			}
+		}
+
+
+		var d;
+		dstObj = {}	
+		dstObj.id = srcObj.id;
+		dstObj.name = srcObj.name;
+		dstObj.pId = srcObj.pId;
+		dstObj.isDir = srcObj.isDir;
+		dstObj.target = srcObj.target;
+		dstObj.url = srcObj.url;
+		if ( typeof srcObj[countKey] != 'undefined' ) {
+			dstObj[countKey] = srcObj[countKey];
+		}
+		var cnt = 0;
+		var children = []
+		if (typeof srcObj[childKey] != 'undefined') {
+			dstObj[childKey] = [];
+			for (var k in srcObj[childKey]) {
+				copyNode(r, srcObj[childKey][k], dstObj, pageSize)
+				cnt += 1;
+				if ( cnt >= pageSize ) {
+					break
+				}
+			} 
+		}
+
+	}
+	var r = [];
+	var node;
+	var tmpLen;
+	var parentKey = this.treeNodeSetting.pIdKey;
+	var childKey = this.treeNodeSetting.childKey;
+	var countKey = this.treeNodeSetting.countKey;
+	for (i = 0, l = this.formatedData.length; i < l; i++ ) {
+		var dstObj = {}	
+		copyNode(r, this.formatedData[i], dstObj, 10)
+	}
+}
+
 redisAdmin.prototype.buildTree = function() {
+
+
+	return ;
 	var $obj = $("#" + this.options.targetDom);
 	$obj.html('');
 
