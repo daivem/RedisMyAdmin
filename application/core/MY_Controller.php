@@ -77,20 +77,9 @@ class MY_Controller extends CI_Controller {
 		define('SEPERATOR', get_custom_config('config_global', 'seperator'));
 		
 		/*
-		 * 建树时使用的标志
-		 */
-		define('TREE_END_SIGN', get_custom_config('config_global', 'tree_end_sign'));
-
-		/*
 		 * KEY的最大长度
 		 */
 		define('MAX_KEY_LEN', get_custom_config('config_global', 'max_key_len'));
-		
-		/*
-		 * 快速模式
-		 * （开启后不显示单个KEY的Item总数）
-		 */
-		define('FAST_MODEL', get_custom_config('config_global', 'faster_model'));
 		
 		/*
 		 * 异步加载建树时，一次读取的key的数量
@@ -99,6 +88,22 @@ class MY_Controller extends CI_Controller {
 		
 		define('PROJECT_NAME', get_custom_config('config_global', 'project_name'));
 		define('VERSION', get_custom_config('config_global', 'version'));
+
+		/*
+		 * 执行时间
+		 */
+		$time_limit = get_custom_config('config_global', 'set_time_limit');
+		if ( $time_limit >= 0 ) {
+			set_time_limit($time_limit);
+		}
+
+		/*
+		 * 执行时间
+		 */
+		$memory_limit = get_custom_config('config_global', 'memory_limit');
+		if ( ! empty($memory_limit) ) {
+			ini_set('memory_limit', $memory_limit);	
+		}
 
 		$this -> redis_config = $this -> server_list[SERVER_ID];
 		$this -> redis_config['db'] = CURRENT_DB;
@@ -175,94 +180,6 @@ class MY_Controller extends CI_Controller {
 	{
 		$method = strtolower($this -> input -> server('REQUEST_METHOD'));
 		return 'post' === $method;
-	}
-	
-	
-	public function keys_to_tree($redis_keys, & $namespaces)
-	{
-
-		if ( ! empty($redis_keys) ) {
-			foreach ($redis_keys as $key) {					
-				//限制KEY长度，Redis支持很长的KEY，但在URL中太长浏览器不一定支持
-				if ( isset($key[MAX_KEY_LEN + 1]) ) {
-					continue;
-				}
-					
-				$key = explode(SEPERATOR, $key);
-				$len = count($key);
-		
-				$d = & $namespaces;
-				for ($i = 0; $i < ($len - 1); ++$i) {
-					if ( ! isset($d[$key[$i]]) ) {
-						$d[$key[$i]] = array();
-					}
-					$d = & $d[$key[$i]];
-				}
-					
-				$d[$key[count($key) - 1]] = array(TREE_END_SIGN => TRUE);
-					
-				unset($d);
-			}
-		
-		}
-	}
-	
-	protected function _create_key_tree_head( & $item, $name, $full_key, $is_last, & $return_html)
-	{
-		if ( isset($item[TREE_END_SIGN]) ) {
-			//需要unset掉，否则会影响到节点的判断
-			unset($item[TREE_END_SIGN]);
-		
-			
-			$class = array();
-			$len   = FALSE;
-			
-			$current = get_arg('key');
-		
-			if ( $current && ($full_key == $current)) {
-				$class[] = 'current';
-			}
-			if ($is_last) {
-				$class[] = 'last';
-			}
-		
-			$redis = $this -> redis_model -> get_redis_instance();
-
-			if ( ! FAST_MODEL ) {
-				$type = $this -> redis_model ->  get_key_type($full_key);
-					
-				if ( !isset($this -> _redis_types[$type]) ) {
-					return;
-				}
-				
-				$type  = $this -> _redis_types[$type];				
-				switch ($type) {
-					case 'hash':
-						$len = $redis -> hLen($full_key);
-						break;
-							
-					case 'list':
-						$len = $redis -> lSize($full_key);
-						break;
-							
-					case 'set':
-						$len = count($redis -> sMembers($full_key));
-						break;
-							
-					case 'zset':
-						$len = count($redis -> zRange($full_key, 0, -1));
-						break;
-				}
-			}
-		
-			$tree_sub1 = array();
-			$tree_sub1[] =  '<li' . (empty($class) ? '' : ' class="' . implode(' ', $class) . '"') . '>';
-			$tree_sub1[] = '<a href="' . manager_site_url('view', 'index', 'key=' . urlencode($full_key)) .'" target="iframe">' . format_html($name);
-			$tree_sub1[] = ($len !== FALSE) ? '<span class="info">(' . $len . ')</span>' : '';
-			$tree_sub1[] = '</a></li>';
-				
-			$return_html[] = implode(PHP_EOL, $tree_sub1);		
-		}
 	}
 	
 	

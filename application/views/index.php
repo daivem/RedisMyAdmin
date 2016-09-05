@@ -25,53 +25,56 @@
 		<?php } ?>
 	</p>
 	<p> 
-		<a href="<?= manager_site_url('overview', 'index'); ?>"><img src="<?= base_url('static/images/calendar.gif'); ?>" width="16" height="16" title="概况" alt="概况"></a> 
-		<a href="<?= manager_site_url('info', 'index'); ?>"><img src="<?= base_url('static/images/info.png'); ?>" width="16" height="16" title="详细信息" alt="详细信息"></a> 
-		<a href="<?= manager_site_url('export', 'index'); ?>"><img src="<?= base_url('static/images/export.png'); ?>" width="16" height="16" title="导出所有数据" alt="导出所有数据"></a> 
-		<a href="<?= manager_site_url('import', 'index'); ?>"><img src="<?= base_url('static/images/import.png'); ?>" width="16" height="16" title="导入数据" alt="导入数据"></a> 
-		<a href="<?= manager_site_url('overview', 'index', 'viewall=1'); ?>"><img src="<?= base_url('static/images/favicon.png'); ?>" width="16" height="16" title="服务器一览表" alt="服务器一览表"></a> 	
-		<a href="<?= manager_site_url('idle', 'index'); ?>"><img src="<?= base_url('static/images/zoom.png'); ?>" width="16" height="16" title="空闲key列表" alt="空闲key列表"></a> 
+		<a target="iframe" href="<?= manager_site_url('overview', 'index'); ?>"><img src="<?= base_url('static/images/calendar.gif'); ?>" width="16" height="16" title="概况" alt="概况"></a> 
+		<a target="iframe" href="<?= manager_site_url('info', 'index'); ?>"><img src="<?= base_url('static/images/info.png'); ?>" width="16" height="16" title="详细信息" alt="详细信息"></a> 
+		<a target="iframe" href="<?= manager_site_url('export', 'index'); ?>"><img src="<?= base_url('static/images/export.png'); ?>" width="16" height="16" title="导出所有数据" alt="导出所有数据"></a> 
+		<a target="iframe" href="<?= manager_site_url('import', 'index'); ?>"><img src="<?= base_url('static/images/import.png'); ?>" width="16" height="16" title="导入数据" alt="导入数据"></a> 
+		<a target="iframe" href="<?= manager_site_url('overview', 'index', 'viewall=1'); ?>"><img src="<?= base_url('static/images/favicon.png'); ?>" width="16" height="16" title="服务器一览表" alt="服务器一览表"></a> 	
+		<a target="iframe" href="<?= manager_site_url('idle', 'index'); ?>"><img src="<?= base_url('static/images/zoom.png'); ?>" width="16" height="16" title="空闲key列表" alt="空闲key列表"></a> 
 	<?php if (AUTH) { ?>
 		<a href="<?= manager_site_url('login', 'logout'); ?>"><img src="<?= base_url('static/images/logout.png'); ?>" width="16" height="16" title="退出登录" alt="退出登录"></a> &nbsp;&nbsp;&nbsp;<img id="waiting" src='static/images/waiting.gif' class='waiting' style="display:none; width:16px; height:16px;"/> 
 	<?php } ?>
 	</p>
 	<p> 
-		<a href="<?= manager_site_url('edit', 'index'); ?>" class="add">新增一个键</a> 
+		<a target="iframe" href="<?= manager_site_url('edit', 'index'); ?>" class="add">新增一个键</a> 
 	</p>
-	<p> 在当前列表中查找：
-		<input type="text" id="filter" size="24" value="关键字" class="info">
-	</p>
-	<p>
+	<div>
 	<form onSubmit="return false">
-		前缀筛选：
-		<input type="text" name="prefix" id="prefix" value="<?= $prefix; ?>" />
-		<input type="submit" onclick="goPrefix();" value="筛选" />
+		查看指定Key：
+		<input type="text" name="viewKey" id="viewKey" value="<?= isset($_GET['key']) ? $_GET['key'] : ''; ?>" />
+		<input type="submit" onclick="doViewKey();" value="查看" />
 	</form>
-	</p>
+	</div>
 	<p></p>
-	<p></p>
-	<p></p>
-	<div id="keys">
-<?php if ( $html_key_tree !== FALSE) { 
-	echo $html_key_tree;
-?>
+	<div>
+	<form onSubmit="return false">
+		筛选Key前缀：
+		<input type="text" name="prefix" id="prefix" value="<?= $prefix; ?>" />
+		<input type="submit" onclick="doViewPrefix();" value="筛选" />
+	</form>
+	</div>
+	<div id="keys_tree" class="ztree">
+	<?php 
+		if ( ! $over_critical ) { 
+	?>
+	<script type="text/javascript">
+		$(function($){
+			startLoadData();
+		})
+	</script>
 
-<script type="text/javascript">
-$(document).ready(function(){
-	bind_tree_event();
-})
-</script>
-		<?php 
-} else {
-?>
+	<?php 
+		} else {
+	?>
 		<p> 当前数据库的KEY总量为：
 			<?= $db_size ?>
 			<br />
-			到达服务器限制的临界值：
+			到达服务器限制的阈值：
 			<?= $db_size_critical; ?>
 		</p>
-		<input type="button" value="加载数据" onClick="loadTree(this)" />
+		<input type="button" id="btn_load_data" value="加载数据" onClick="startLoadData()" />
 		<?php } ?>
+		<div id="current_loaded"></div>
 	</div>
 	<!-- #keys -->
 	
@@ -87,95 +90,57 @@ $(document).ready(function(){
 var _global = _global || {};
 <?php
 $uri = $_SERVER['QUERY_STRING'];
-$uri_arr = explode('&', $uri);
-$unset_arr = array('c', 'm', 'key');
-foreach($uri_arr as $k => $v) {
-	list($_k, $_v) = explode('=', $v);
-	if ( in_array($_k, $unset_arr)) {
-		unset($uri_arr[$k]);
-	}
-}
-
-?>
-_global.url_params = '<?= implode('&', $uri_arr) ?>';
-_global.isLock = false;
-var loadTree = function(obj){
-	if ( _global.isLock ) {
-		return false;	
-	} else {
-		$(obj).val('加载中..');
-		_global.isLock = true;
-	}
-	
-	
-	$.ajax({
-		type:'GET',
-		url:'<?= manager_site_url('index', 'get_key_tree');?>',
-		data:{},
-		dataType:'jsonp',
-		timeout:60000,
-		cache:false,
-		error:function(json){
-			alert('连接服务器超时');
-			$(obj).val('加载数据');
-			_global.isLock = false;			
-		},
-		success:function(json){
-	
-			_global.isLock = false;	
-			if (typeof (json) == 'object') {
-				if (json.result == 0) {
-					$("#keys").html(json.data.html);
-					bind_tree_event();
-				} else {
-					$(obj).val('加载数据');
-					alert(json.msg);
-					return false;
-				}
-			} else {
-				$(obj).val('加载数据');
-				alert('连接服务器出错。');
-				return false;
-			}
-			
-			
+$uri_arr = array();
+if ( ! empty($uri) ) {
+	$uri_arr = explode('&', $uri);
+	$unset_arr = array('c', 'm', 'key');
+	foreach($uri_arr as $k => $v) {
+		list($_k, $_v) = explode('=', $v);
+		if ( in_array($_k, $unset_arr)) {
+			unset($uri_arr[$k]);
 		}
-	});	
+	}
+}
+?>
+_global.urlParams = '<?= implode('&', $uri_arr) ?>';
+_global.isLock = false;
+_global.baseUrl = '<?= base_url(); ?>';
+_global.inited = false;
+
+
+var control = new redisAdmin({
+	targetDom: 'keys_tree',
+	baseUrl: '<?= base_url(); ?>',
+	extraParams : _global.urlParams,
+	seperator: '<?= SEPERATOR ?>'
+})
+
+function startLoadData() {
+	if ( $("#btn_load_data").length > 0 ) {
+		$("#btn_load_data").val('加载中..');
+	}
+	control.loadData('<?= KEY_PREFIX ?>');
 }
 
-function GetRequest() { 
-   var url = location.search; //获取url中"?"符后的字串 
-   var theRequest = new Object(); 
-   if (url.indexOf("?") != -1) { 
-	  var str = url.substr(1); 
-	  strs = str.split("&"); 
-	  for(var i = 0; i < strs.length; i ++) { 
-		 theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]); 
-	  } 
-   } 
-   return theRequest; 
-} 	
 
-var goPrefix = function() {
+var doViewKey = function() {
+	var key = $("#viewKey").val();
+	var url = '<?= manager_site_url('index', 'view');?>';
+	
+	url += '&key=' + key;
+	
+	top.location.href = url;
+}
+
+var doViewPrefix = function() {
 	var prefix = $("#prefix").val();
 	var url = '<?= manager_site_url('index', 'index');?>';
 	
-	var params = GetRequest();
-	params['m'] = params['c'];
-	params['c'] = 'index';
-	var href = location.protocol + '\/\/' + location.host + location.pathname;
-	var separator = '?';
-	for(var key in params) {
-		if ( key == 'prefix' ) {
-			continue;	
-		}
-		href += separator + key + '=' + params[key];
-		separator = '&';
-	}
+	url += '&prefix=' + prefix;
 	
-	href += '&prefix=' + prefix;
-	
-	top.location.href = href;
+	top.location.href = url;
 }
 
-</script><?php PagerWidget::footer(); ?>
+</script>
+
+<?php PagerWidget::footer(); ?>

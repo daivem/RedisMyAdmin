@@ -17,11 +17,6 @@ class Idle extends MY_Controller {
 
 	public function index()
 	{
-		
-		if ( ! FAST_MODEL ) {
-			show_error('此功能必须在config_global.php中开启faster_model。原因：显示单个Key的Item总数需要读取Key的信息，这将导致Key的空闲时间被刷新。');
-		}
-		
 		$idle_infos = $this -> _get_idle_report();
 		$db_size = $this -> redis_model -> get_db_size();
 				
@@ -43,7 +38,8 @@ class Idle extends MY_Controller {
 		$cnt = $cnt <= 0 ? 10 : $cnt;
 		
 		$redis = $this -> redis_model -> get_redis_instance();
-		$keys = $redis -> keys('*');
+		$keys = $this -> redis_model -> get_all_keys_by_scan('', FALSE);
+		// $keys = $redis -> keys('*');
 		
 		$head = IdleQueue::factory(-1, $cnt);
 		

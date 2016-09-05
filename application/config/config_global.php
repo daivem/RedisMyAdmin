@@ -1,7 +1,22 @@
 <?php
 
 $config['project_name'] = 'RedisMyAdmin';
-$config['version'] = '0.3.3';
+$config['version'] = '0.4.0';
+
+/**
+ * PHP执行时间
+ * set_time_limit(xxx);
+ * 设置为 -1 则不执行此命令，使用php.ini设置的执行时间
+ * 设置为 0 则不限制时间（不建议）
+ */
+$config['set_time_limit'] = 60;
+
+/**
+ * PHP内存限制
+ * ini_set('memory_limit', '128M');
+ * 设置为空则不执行此命令，使用php.ini中设置的值
+ */
+$config['memory_limit'] = '1024M';
 
 /*
  * 建树时的分隔符
@@ -16,28 +31,19 @@ $config['max_key_len'] = 200;
 
 
 /*
- * 快速模式
- * （开启后不显示单个KEY的Item总数）
+ * 空闲键列表的Key
  */
-$config['faster_model'] = 1;
-
-
 $config['idle_key'] = '___idle___';
 
 /*
- * 建树时的一个标志
- */
-$config['tree_end_sign'] = '__rda__';
-
-/*
  * 临界点
- * 当KEY数量超过此阀值的时候需要手动刷新
+ * 当KEY数量超过此阈值的时候需要手动刷新
  * 设为0则关闭此功能
  */
-$config['db_size_critical'] = 10000;
+$config['db_size_critical'] = 20000;
 
 /*
  * 建树时每次读取的个数
  */
-$config['tree_key_page_size'] = 1000;
+$config['tree_key_page_size'] = 10000;
 
