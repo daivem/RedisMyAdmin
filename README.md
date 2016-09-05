@@ -47,7 +47,7 @@ TODO：
 
 v0.4.0 (2016-09-05)
 
-采用scan命令读取key列表(redis >= 2.8)，页面建树改用ztree (https://github.com/zTree/zTree_v3)，单个节点超过10万时不建议展开(好吧，有可能展不开)
+采用scan命令读取key列表(redis >= 2.8)，页面建树改用ztree ( https://github.com/zTree/zTree_v3 )，单个节点超过10万时不建议展开(好吧，有可能展不开)
 
 增加直接查看指定key的功能
 
