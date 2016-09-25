@@ -8,6 +8,10 @@ class Redis_Model extends CI_Model {
 	private $_port;
 	private $_db;
 	private $_auth;
+
+	private $_config;	
+
+	private $_is_cluster;
 	
 	public function __construct()
 	{
@@ -28,17 +32,21 @@ class Redis_Model extends CI_Model {
 		){
 			show_error('Redis Config Error');
 		}
-		
+	
+		$this -> _is_cluster = FALSE;
+
 		if ( isset($redis_config['host']) ) {
 			return $this -> _init_redis($redis_config);
 		} elseif ( ( isset($redis_config['cluster_list']) )
 				&& ( is_array($redis_config['cluster_list']) )
 		){
 			$this -> _init_cluster($redis_config);
+			$this -> _is_cluster = TRUE;
 		} else{
 			show_error('Redis Config Error');
 		}
 		
+		$this -> _config = $redis_config;	
 	}
 	
 	private function _init_cluster($redis_config)
@@ -153,7 +161,9 @@ class Redis_Model extends CI_Model {
 	 */
 	public function get_all_keys($prefix = '', $need_sort = TRUE)
 	{
-		if ( method_exists($this -> _redis, 'scan') ) {
+		if ( ( method_exists($this -> _redis, 'scan') ) 
+			&& ( ! $this -> _is_cluster )
+		){
 			return $this -> get_all_keys_by_scan($prefix, $need_sort);
 		}
 
@@ -188,9 +198,15 @@ class Redis_Model extends CI_Model {
 	public function scan_keys($prefix, $iterator, $need_sort = TRUE)
 	{
 		$keys = array();
-		$scan_prefix = empty($prefix) ? NULL : $prefix . '*';
 		$this -> _redis -> setOption(Redis::OPT_SCAN, Redis::SCAN_RETRY);	
-		$keys = $this -> _redis -> scan($iterator, $scan_prefix, TREE_KEY_PAGE_SIZE);
+		if ( ! $this -> _is_cluster ) {
+			$scan_prefix = empty($prefix) ? NULL : $prefix . '*';
+			$keys = $this -> _redis -> scan($iterator, $scan_prefix, TREE_KEY_PAGE_SIZE);
+		} else {
+			$scan_prefix = empty($prefix) ? '*' : $prefix . '*';
+			$keys = $this -> _redis -> keys($scan_prefix);
+			$iterator = 0;
+		}
 
 		if ( $need_sort ) {
 			sort($keys);	
