@@ -85,6 +85,11 @@ class MY_Controller extends CI_Controller {
 		 * 异步加载建树时，一次读取的key的数量
 		 */
 		define('TREE_KEY_PAGE_SIZE', get_custom_config('config_global', 'tree_key_page_size'));
+
+		/*
+		 * 异步查找空闲Key时，一次读取的key的数量
+		 */
+		define('IDLE_KEY_PAGE_SIZE', get_custom_config('config_global', 'idle_key_page_size'));
 		
 		define('PROJECT_NAME', get_custom_config('config_global', 'project_name'));
 		define('VERSION', get_custom_config('config_global', 'version'));

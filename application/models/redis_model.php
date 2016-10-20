@@ -195,13 +195,13 @@ class Redis_Model extends CI_Model {
 		return $keys;
 	}
 	
-	public function scan_keys($prefix, $iterator, $need_sort = TRUE)
+	public function scan_keys($prefix, $iterator, $need_sort = TRUE, $page_size = TREE_KEY_PAGE_SIZE)
 	{
 		$keys = array();
 		$this -> _redis -> setOption(Redis::OPT_SCAN, Redis::SCAN_RETRY);	
 		if ( ! $this -> _is_cluster ) {
 			$scan_prefix = empty($prefix) ? NULL : $prefix . '*';
-			$keys = $this -> _redis -> scan($iterator, $scan_prefix, TREE_KEY_PAGE_SIZE);
+			$keys = $this -> _redis -> scan($iterator, $scan_prefix, $page_size);
 		} else {
 			$scan_prefix = empty($prefix) ? '*' : $prefix . '*';
 			$keys = $this -> _redis -> keys($scan_prefix);

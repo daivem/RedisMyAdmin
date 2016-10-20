@@ -118,38 +118,44 @@ class Export extends MY_Controller {
 		// Hash
 		else if ($type == 'hash') {
 			$values = $redis -> hGetAll($key);
-	
+			$result = array();	
 			foreach ($values as $k => $v) {
-				return 'HSET "' . addslashes($key) . '" "' . addslashes($k) . '" "' . addslashes($v) . '"';
+				$result[] = 'HSET "' . addslashes($key) . '" "' . addslashes($k) . '" "' . addslashes($v) . '"';
 			}
+			return implode(PHP_EOL, $result);
 		}
 	
 		// List
 		else if ($type == 'list') {
 			$size = $redis -> lSize($key);
-	
-			for ($i = 0; $i < $size; ++$i) {
-				return 'RPUSH "' . addslashes($key) . '" "' . addslashes($redis -> lGet($key .  $i)) . '"';
+			$result = array();	
+			for ($i = 0; $i < $size; $i++) {
+				$result[] = 'RPUSH "' . addslashes($key) . '" "' . addslashes($redis -> lGet($key,  $i)) . '"';
 			}
+			return implode(PHP_EOL, $result);
 		}
 	
 		// Set
 		else if ($type == 'set') {
 			$values = $redis -> sMembers($key);
 				
+			$result = array();	
 			foreach ($values as $v) {
-				return 'SADD "' . addslashes($key) . '" "' . addslashes($v) . '"';
+				$result[] = 'SADD "' . addslashes($key) . '" "' . addslashes($v) . '"';
 			}
+			return implode(PHP_EOL, $result);
 		}
 	
 		// ZSet
 		else if ($type == 'zset') {
 			$values = $redis -> zRange($key, 0, -1);
+			$result = array();	
 	
 			foreach ($values as $v) {
 				$s = $redis -> zScore($key, $v);					
-				return 'ZADD "' . addslashes($key) . '" ' . $s . ' "' . addslashes($v) . '"';
+				$result[] = 'ZADD "' . addslashes($key) . '" ' . $s . ' "' . addslashes($v) . '"';
 			}
+			return implode(PHP_EOL, $result);
 		}
 	}
 	

@@ -103,7 +103,8 @@ if ( ! function_exists('get_custom_config') )
 if (! function_exists('format_html') )
 {
 	function format_html($str) {
-		return htmlentities($str, ENT_COMPAT, 'UTF-8');
+		return htmlspecialchars($str, ENT_SUBSTITUTE + ENT_QUOTES);
+		
 	}
 }
 

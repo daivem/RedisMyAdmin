@@ -47,3 +47,9 @@ $config['db_size_critical'] = 20000;
  */
 $config['tree_key_page_size'] = 10000;
 
+/*
+ * 检索空闲key时每次读取的个数 
+ * 如为本机或本地局域网 建议甚至为1000-2000
+ * 如为远程redis服务器，建议设置100-500
+ */
+$config['idle_key_page_size'] = 1000;
