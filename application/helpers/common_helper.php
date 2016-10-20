@@ -103,8 +103,11 @@ if ( ! function_exists('get_custom_config') )
 if (! function_exists('format_html') )
 {
 	function format_html($str) {
-		return htmlspecialchars($str, ENT_SUBSTITUTE + ENT_QUOTES);
-		
+	    if ( version_compare(PHP_VERSION, '5.4.0', 'ge') ) { 
+	        return htmlspecialchars($str, ENT_SUBSTITUTE + ENT_QUOTES);
+	    } else {
+	        return htmlspecialchars($str, ENT_QUOTES);
+	    }   	
 	}
 }
 
