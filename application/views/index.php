@@ -30,7 +30,8 @@
 		<a target="iframe" href="<?= manager_site_url('export', 'index'); ?>"><img src="<?= base_url('static/images/export.png'); ?>" width="16" height="16" title="导出所有数据" alt="导出所有数据"></a> 
 		<a target="iframe" href="<?= manager_site_url('import', 'index'); ?>"><img src="<?= base_url('static/images/import.png'); ?>" width="16" height="16" title="导入数据" alt="导入数据"></a> 
 		<a target="iframe" href="<?= manager_site_url('overview', 'index', 'viewall=1'); ?>"><img src="<?= base_url('static/images/favicon.png'); ?>" width="16" height="16" title="服务器一览表" alt="服务器一览表"></a> 	
-		<a target="iframe" href="<?= manager_site_url('idle', 'index'); ?>"><img src="<?= base_url('static/images/zoom.png'); ?>" width="16" height="16" title="空闲key列表" alt="空闲key列表"></a> 
+		<!-- <a target="iframe" href="<?= manager_site_url('idle', 'index'); ?>"><img src="<?= base_url('static/images/zoom.png'); ?>" width="16" height="16" title="空闲key列表" alt="空闲key列表"></a>  -->
+		<a target="iframe" href="<?= manager_site_url('clear_idle_key', 'index'); ?>"><img src="<?= base_url('static/images/zoom.png'); ?>" width="16" height="16" title="空闲key列表" alt="检索/删除 空闲key"></a> 
 	<?php if (AUTH) { ?>
 		<a href="<?= manager_site_url('login', 'logout'); ?>"><img src="<?= base_url('static/images/logout.png'); ?>" width="16" height="16" title="退出登录" alt="退出登录"></a> &nbsp;&nbsp;&nbsp;<img id="waiting" src='static/images/waiting.gif' class='waiting' style="display:none; width:16px; height:16px;"/> 
 	<?php } ?>

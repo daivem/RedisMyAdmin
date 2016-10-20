@@ -100,5 +100,11 @@ class Index extends MY_Controller {
 		$this -> index();
 	}
 	
+	public function clear_idle_key()
+	{
+		$this -> _current_method = 'clear_idle_key';
+		$this -> index();
+	}
+	
 	
 }
